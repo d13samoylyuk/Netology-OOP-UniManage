@@ -21,7 +21,8 @@ class Student:
     
     def rate_lecturer(self, lecturer, course, grade):
         if (isinstance(lecturer, Lecturer) and course
-            in lecturer.courses_attached and course in self.courses_in_progress):
+            in lecturer.courses_attached and course
+            in self.courses_in_progress):
             if course in lecturer._rates:
                 lecturer._rates[course] += [grade]
             else:
@@ -53,10 +54,9 @@ class Mentor:
 
 
 class Lecturer(Mentor):
-    _rates = {}
-
     def __init__(self, name, surname):
         super().__init__(name, surname)
+        self._rates = {}
     
     def __str__(self):
         info = (f'Имя: {self.name}\nФамилия: {self.surname}\n'
@@ -98,14 +98,16 @@ class Reviewer(Mentor):
 
 
 def avrg_for_stud_per_course(students, course):
-    grades_per_student = [student._grades[course] for student in students]
+    grades_per_student = [student._grades[course] for student in students
+                          if course in student._grades]
     avrg_every_student = [sum(x) / len(x) for x in grades_per_student]
     avrg = sum(avrg_every_student) / len(avrg_every_student)
     return round(avrg, 1)
 
 
 def avrg_for_lect_per_course(lecturers, course):
-    rates_per_lecturer = [lecturer._rates[course] for lecturer in lecturers]
+    rates_per_lecturer = [lecturer._rates[course] for lecturer in lecturers
+                          if course in lecturer._rates]
     avrg_every_lecturer = [sum(x) / len(x) for x in rates_per_lecturer]
     avrg = sum(avrg_every_lecturer) / len(avrg_every_lecturer)
     return round(avrg, 1)
